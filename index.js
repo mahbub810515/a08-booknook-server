@@ -30,7 +30,7 @@ export async function connectToMongoDB() {
 const connectClient=await connectToMongoDB();
 const db = connectClient.db("booknook");
 const userCollection = db.collection("users");
-
+const booksCollection = db.collection("books");
 
 app.post("/api/sign-up",async(req,res)=>{
   const user = req.body;
@@ -38,7 +38,12 @@ app.post("/api/sign-up",async(req,res)=>{
   const result  = await userCollection.insertOne(user);
   res.send(result);
 })
-
+app.post("/api/add-book",async(req,res)=>{
+  const book = req.body;
+  console.log("receive book:",book)
+  const result  = await booksCollection.insertOne(book);
+  res.send(result);
+})
 app.get("/", (req, res) => {
     res.send("Hello Homepage");
 });
