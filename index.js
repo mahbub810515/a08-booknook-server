@@ -44,6 +44,17 @@ app.post("/api/add-book",async(req,res)=>{
   const result  = await booksCollection.insertOne(book);
   res.send(result);
 })
+app.get("/api/books", async (req, res) => {
+  try {
+    const result = await booksCollection.find().toArray();
+    res.status(200).send(result);
+  } catch (error) {
+    res.status(500).send({
+      message: "Failed to fetch books",
+      error: error.message
+    });
+  }
+});
 app.get("/", (req, res) => {
     res.send("Hello Homepage");
 });
