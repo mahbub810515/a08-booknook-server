@@ -1,13 +1,17 @@
 import express from "express";
 import 'dotenv/config'
 import { MongoClient } from 'mongodb';
+import cors from "cors"
 
 
 const app = express();
 
-const PORT = process.env.PORT || 5050;
+const PORT = process.env.PORT || 5000;
 
 // Middleware
+app.use(cors({
+  origin: "http://localhost:3000"
+}));
 app.use(express.json());
 
 
@@ -23,12 +27,17 @@ export async function connectToMongoDB() {
   }
 }
 
-connectToMongoDB();
+const connectClient=await connectToMongoDB();
+const db = connectClient.db("booknook");
+const userCollection = db.collection("users");
 
-// Call this only when your application terminates
-// export async function disconnectFromMongoDB() {
-//   await client.close();
-// }
+
+app.post("/api/sign-up",async(req,res)=>{
+  const user = req.body;
+  console.log("receive user:",user)
+  const result  = await userCollection.insertOne(user);
+  res.send(result);
+})
 
 app.get("/", (req, res) => {
     res.send("Hello Homepage");
